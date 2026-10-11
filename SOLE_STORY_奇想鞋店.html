@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SOLE STORY · 奇想鞋店</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"PingFang SC",sans-serif;background:#80c8ff;color:#422b27;min-height:100vh}
+.game{max-width:920px;margin:auto;min-height:100vh;background:linear-gradient(#8fd4ff 0 31%,#f4c57f 31%);overflow:hidden}
+.sky{height:31vh;min-height:210px;padding:22px;background:linear-gradient(#79c8ff,#c7ebff);position:relative}
+.title{text-align:center;position:relative;z-index:2}.title h1{font-size:clamp(42px,8vw,76px);margin:0;color:white;text-shadow:0 5px 0 #563d65,0 8px 12px #417bb5}
+.title p{display:inline-block;background:#9b5c37;color:#fff7dc;padding:7px 20px;border-radius:12px;font-weight:900;font-size:20px}
+.bar{position:absolute;top:10px;right:12px;background:#513a3e;color:white;padding:9px 14px;border-radius:18px;font-weight:800;z-index:4}
+.shop{min-height:69vh;padding:18px;background:linear-gradient(160deg,#f8d49a,#bd7748);border-top:8px solid #76452f}
+.panel{background:#fff8e9;border:4px solid #75452f;border-radius:22px;box-shadow:0 8px 0 #75452f;margin:0 auto 16px;padding:18px;max-width:760px}
+.customer{display:flex;gap:14px;align-items:center}.avatar{font-size:64px;background:#b8eaff;border-radius:50%;width:92px;height:92px;display:grid;place-items:center;border:4px solid #75452f}
+.speech{flex:1;font-weight:700;line-height:1.55}.speech b{font-size:22px}.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.tag{background:#e8f7ff;padding:6px 10px;border-radius:14px;font-weight:800}
+.lab h2{text-align:center}.shoe{font-size:100px;text-align:center;filter:drop-shadow(0 9px 3px #9b6b50);transition:.25s}
+.materials{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.mat{border:3px solid #8c5a3d;border-radius:14px;background:#fff;padding:10px 4px;font-size:30px;box-shadow:0 4px 0 #8c5a3d}.mat span{display:block;font-size:12px;font-weight:800}.mat.on{background:#fff0a9;transform:translateY(3px);box-shadow:0 1px 0 #8c5a3d}
+.btn{display:block;width:100%;border:0;border-radius:16px;background:#f47d38;color:#fff;font-weight:900;font-size:20px;padding:14px;box-shadow:0 6px 0 #9f4428;margin-top:15px}.result{text-align:center;display:none}.result .big{font-size:100px}.stars{font-size:42px}.reset{background:#7553a8;box-shadow:0 6px 0 #49346c}
+</style></head>
+<body><main class="game"><div class="bar">🪙 <span id="coins">500</span>　⭐ <span id="fame">0</span></div>
+<section class="sky"><div class="title"><h1>SOLE STORY</h1><p>奇想鞋店</p></div></section>
+<section class="shop"><div id="play"><div class="panel customer"><div class="avatar">🪼</div><div class="speech"><b>水母少女的订单</b><br>“我想要一双可以在水里走、可爱，而且最好会发光的鞋！”<div class="stats"><span class="tag">💧 防水</span><span class="tag">💗 可爱</span><span class="tag">✨ 发光</span></div></div></div>
+<div class="panel lab"><h2>🔧 鞋子实验台</h2><div class="shoe" id="shoe">👟</div><p style="text-align:center" id="name">普通运动鞋</p><div class="materials">
+<button class="mat" data-id="water">💧<span>水滴</span></button><button class="mat" data-id="jelly">🪼<span>水母</span></button><button class="mat" data-id="star">⭐<span>星星</span></button><button class="mat" data-id="fire">🔥<span>火焰</span></button><button class="mat" data-id="cloud">☁️<span>云朵</span></button><button class="mat" data-id="wing">🪽<span>翅膀</span></button><button class="mat" data-id="bread">🍞<span>吐司</span></button><button class="mat" data-id="cactus">🌵<span>仙人掌</span></button></div><button class="btn" id="make">✨ 制作这双鞋</button></div></div>
+<div class="panel result" id="result"><div class="big" id="resultShoe">👟</div><h2 id="resultName">奇想鞋</h2><div class="stars" id="stars"></div><h3 id="comment"></h3><p id="reward"></p><button class="btn reset" id="again">再做一双</button></div></section></main>
+<script>
+const selected=new Set(),mats=[...document.querySelectorAll('.mat')],labels={water:'水滴',jelly:'水母',star:'星光',fire:'喷火',cloud:'云朵',wing:'飞翼',bread:'吐司',cactus:'仙人掌'};
+mats.forEach(b=>b.onclick=()=>{let id=b.dataset.id;if(selected.has(id)){selected.delete(id);b.classList.remove('on')}else if(selected.size<3){selected.add(id);b.classList.add('on')}update()});
+function update(){let a=[...selected];document.querySelector('#name').textContent=a.length?a.map(x=>labels[x]).join('·')+'奇想鞋':'普通运动鞋'}
+document.querySelector('#make').onclick=()=>{if(!selected.size)return alert('先给鞋子加一点奇怪的材料吧！');let score=1;['water','jelly','star'].forEach(x=>selected.has(x)&&score++);score=Math.min(5,score);let reward=score*80,coins=+(localStorage.soleCoins||500),fame=+(localStorage.soleFame||0);coins+=reward;fame+=score;localStorage.soleCoins=coins;localStorage.soleFame=fame;document.querySelector('#coins').textContent=coins;document.querySelector('#fame').textContent=fame;let a=[...selected];document.querySelector('#resultName').textContent=a.map(x=>labels[x]).join('·')+'鞋';document.querySelector('#resultShoe').textContent=selected.has('jelly')?'👟🪼':selected.has('wing')?'🪽👟🪽':selected.has('fire')?'🔥👟🔥':'✨👟✨';document.querySelector('#stars').textContent='⭐'.repeat(score)+'☆'.repeat(5-score);document.querySelector('#comment').textContent=score>=4?'水母少女：哇！这就是我梦里的鞋！':score>=3?'水母少女：好可爱！还能更神奇一点～':'水母少女：它好像不太适合海里？';document.querySelector('#reward').textContent='获得 🪙 '+reward+'　品牌星星 +'+score;document.querySelector('#play').style.display='none';document.querySelector('#result').style.display='block'};
+document.querySelector('#again').onclick=()=>location.reload();document.querySelector('#coins').textContent=localStorage.soleCoins||500;document.querySelector('#fame').textContent=localStorage.soleFame||0;
+</script></body></html>
